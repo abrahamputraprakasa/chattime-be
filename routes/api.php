@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\RoomController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +17,23 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+
+Route::post('/login', [UserController::class, 'login']);
+
+//protected routes
+Route::group(['prefix' => 'room', 'middleware' => ['auth:sanctum']], function () {
+    Route::get('/get', [RoomController::class, 'get']);
+    Route::post('/create', [RoomController::class, 'create']);
+    Route::post('/delete', [RoomController::class, 'delete']);
 });
+
+
+
+Route::group(['prefix' => 'chat', 'middleware' => ['auth:sanctum']], function () {
+    Route::post('/send', [ChatController::class, 'sendMessage']);
+});
+
+
+
+
+
